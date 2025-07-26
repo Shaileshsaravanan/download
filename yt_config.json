@@ -1,0 +1,9 @@
+{
+  "output_folder": "downloads",
+  "max_threads": 4,
+  "audio_format": "mp3",
+  "video_format": "mp4",
+  "default_quality": "highest",
+  "default_bitrate": "highest",
+  "dry_run": false
+}
