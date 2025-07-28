@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>yt-dlp Stream Downloader</title>
+</head>
+<body>
+  <h1>Stream Video/Audio Download via yt-dlp</h1>
+
+  <form id="download-form">
+    <label>Video URL:</label><br>
+    <input type="text" id="url" required size="80"><br><br>
+
+    <label>Download Type:</label><br>
+    <select id="format">
+      <option value="video">Video (MP4)</option>
+      <option value="audio">Audio (MP3)</option>
+    </select><br><br>
+
+    <label>Quality (yt-dlp format string):</label><br>
+    <input type="text" id="quality" placeholder="best or bestvideo+bestaudio"><br><br>
+
+    <button type="submit">Download</button>
+  </form>
+
+  <script>
+    document.getElementById('download-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const url = document.getElementById('url').value;
+      const format = document.getElementById('format').value;
+      const quality = document.getElementById('quality').value || 'best';
+
+      const res = await fetch('/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, format, quality })
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        alert("Download error: " + (err.error || "Unknown error"));
+        return;
+      }
+
+      const blob = await res.blob();
+      const a = document.createElement('a');
+      const urlObject = window.URL.createObjectURL(blob);
+      a.href = urlObject;
+
+      const ext = format === 'audio' ? 'mp3' : 'mp4';
+      a.download = `downloaded.${ext}`;
+      a.click();
+      window.URL.revokeObjectURL(urlObject);
+    });
+  </script>
+</body>
+</html>
