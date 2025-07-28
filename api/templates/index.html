@@ -1,35 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>yt-dlp Stream Downloader</title>
-</head>
 <body>
-  <h1>Stream Video/Audio Download via yt-dlp</h1>
+  <h1>yt-dlp Stream Downloader</h1>
 
   <form id="download-form">
     <label>Video URL:</label><br>
     <input type="text" id="url" required size="80"><br><br>
 
-    <label>Download Type:</label><br>
-    <select id="format">
-      <option value="video">Video (MP4)</option>
-      <option value="audio">Audio (MP3)</option>
-    </select><br><br>
+    <button type="button" id="process-url">Process URL</button><br><br>
 
-    <label>Quality (yt-dlp format string):</label><br>
-    <input type="text" id="quality" placeholder="best or bestvideo+bestaudio"><br><br>
+    <div id="format-section" style="display:none;">
+      <label>Select Format:</label><br>
+      <select id="quality" required></select><br><br>
 
-    <button type="submit">Download</button>
+      <label>Download Type:</label><br>
+      <select id="format">
+        <option value="video">Video (MP4)</option>
+        <option value="audio">Audio (MP3)</option>
+      </select><br><br>
+
+      <button type="submit" id="download-btn">Download</button>
+    </div>
   </form>
 
   <script>
+    document.getElementById('process-url').addEventListener('click', async function () {
+      const url = document.getElementById('url').value;
+      if (!url) {
+        alert("Please enter a URL first.");
+        return;
+      }
+
+      const res = await fetch('/formats', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        alert("Error fetching formats: " + (err.error || "Unknown error"));
+        return;
+      }
+
+      const data = await res.json();
+      const qualitySelect = document.getElementById('quality');
+      qualitySelect.innerHTML = '';
+      data.formats.forEach(fmt => {
+        const label = `${fmt.format_id} - ${fmt.ext} - ${fmt.resolution || fmt.audio_quality || 'unknown'} - ${fmt.note}`;
+        const opt = document.createElement('option');
+        opt.value = fmt.format_id;
+        opt.textContent = label;
+        qualitySelect.appendChild(opt);
+      });
+
+      document.getElementById('format-section').style.display = 'block';
+    });
+
     document.getElementById('download-form').addEventListener('submit', async function(e) {
       e.preventDefault();
 
       const url = document.getElementById('url').value;
       const format = document.getElementById('format').value;
-      const quality = document.getElementById('quality').value || 'best';
+      const quality = document.getElementById('quality').value;
 
       const res = await fetch('/download', {
         method: 'POST',
@@ -55,4 +86,3 @@
     });
   </script>
 </body>
-</html>
