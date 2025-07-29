@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>download</title>
+    <link rel="stylesheet" href="static/css/output.css" />
+</head>
+<html lang="en" class="bg-black text-white">
+
+    <body class="min-h-screen">
+        <main class="max-w-2xl mx-auto px-6 py-24">
+            <div class="text-center mb-16">
+                <h1 class="text-4xl font-light tracking-tight mb-4">download</h1>
+                <p class="text-neutral-400">
+                    fetch and download videos from any platform
+                </p>
+            </div>
+
+                <div class="rounded-lg border text-white shadow bg-neutral-900 border-neutral-800 overflow-hidden max-w-2xl mx-auto">
+
+                <div id="pre" class="p-8 space-y-6">
+                    <div class="space-y-3">
+                        <label for="url" class="text-sm font-medium text-neutral-300">video url</label>
+                        <div class="relative">
+                            <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500 w-4 h-4" fill="none" stroke="currentcolor" stroke-width="2" viewbox="0 0 24 24"><path d="m10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="m14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                            <input type="url" id="url" placeholder="https://youtube.com/watch?v=..." class="w-full h-12 pl-12 pr-4 py-2 rounded-md bg-neutral-800 border border-neutral-700 text-white placeholder:text-neutral-500 focus:outline-none focus:border-neutral-600 text-sm" />
+                        </div>
+                    </div>
+                    <button onclick="fetchVideo()" id="fetchBtn" class="w-full h-12 px-4 py-2 bg-white text-black rounded-md hover:bg-neutral-200 flex items-center justify-center gap-2 font-medium text-sm">
+                        <div id="fetchbtnicon">
+                            <svg class="w-4 h-4" fill="none" stroke="currentcolor" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                        </div>
+                        fetch video details
+                    </button>
+                </div>
+
+                <div id="post" class="p-8 space-y-6 hidden">
+                    <div class="flex gap-4">
+                        <div class="relative flex-shrink-0">
+                            <img id="vidThumbnail" src="" alt="video thumbnail" class="w-32 h-20 object-cover rounded-lg bg-neutral-800">
+                            <div id="vidLength" class="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded">12:34</div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 id="vidTitle" class="font-medium text-white mb-2 line-clamp-2">amazing video tutorial - learn something new</h3>
+                            <div class="flex items-center gap-4 text-sm text-neutral-400">
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentcolor" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    <span id="vidDuration"></span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentcolor" stroke-width="2" viewbox="0 0 24 24"><path d="m2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                    <span id="vidViews"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label for="formatDropdown" class="block mb-2 text-sm font-medium text-white">select format & quality</label>
+                        <select id="formatDropdown" class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></select>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label for="downloadFormat" class="block mb-2 text-sm font-medium text-white">download as</label>
+                        <select id="downloadFormat" class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                            <option value="video">video</option>
+                            <option value="audio">audio</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-neutral-800 rounded-lg p-4 text-sm flex justify-between">
+                        <span class="text-neutral-300">selected format:</span>
+                        <span class="text-white font-medium"><span id="selected_ext"></span> • <span id="selected_res"></span></span>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button onclick="window.location.reload()" class="flex-1 h-10 px-4 py-2 border border-neutral-700 text-neutral-300 hover:bg-neutral-800 hover:text-white rounded-md text-sm font-medium bg-transparent">back</button>
+                        <button onclick="downloadVideo()" class="flex-1 h-10 px-4 py-2 bg-white text-black hover:bg-neutral-200 rounded-md font-medium text-sm flex items-center justify-center gap-2">
+                            <div id="downloadbtnicon">
+                                <svg class="w-4 h-4" fill="none" stroke="currentcolor" stroke-width="2" viewbox="0 0 24 24">
+                                    <path d="m21 15v4a2 2 0 0 1-2 2h-14a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                            </div>
+                            download
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-12 text-center">
+                <p class="text-xs text-neutral-500">
+                    supports youtube, dailymotion, and more
+                </p>
+            </div>
+        </main>
+    </body>
+    
+</html>
+<script>
+
+    const input = document.getElementById("url");
+    const fetch_button = document.getElementById("fetchBtn");
+    const fetchbtnicon = document.getElementById("fetchbtnicon");
+    const pre = document.getElementById("pre")
+    const post = document.getElementById("post")
+    const vidThumbnail = document.getElementById("vidThumbnail");
+    const vidLength = document.getElementById("vidLength");
+    const vidTitle = document.getElementById("vidTitle");
+    const vidDuration = document.getElementById("vidDuration");
+    const vidViews = document.getElementById("vidViews");
+    const dropdown = document.getElementById('formatDropdown');
+    const selected_ext = document.getElementById('selected_ext');
+    const selected_res = document.getElementById('selected_res');
+    const downloadbtnicon = document.getElementById("downloadbtnicon");
+    function toggleDownloadButtonSpinner(isLoading) {
+        downloadbtnicon.innerHTML = isLoading
+            ? `<svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" /><path class="opacity-75" d="M4 12a8 8 0 018-8" /></svg>`
+            : `<svg class="w-4 h-4" fill="none" stroke="currentcolor" stroke-width="2" viewBox="0 0 24 24"><path d="m21 15v4a2 2 0 0 1-2 2h-14a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>`;
+    }
+
+
+    function toggleButtonState() {
+        const hasText = input.value.trim() !== "";
+        fetch_button.disabled = !hasText;
+
+        fetch_button.classList.toggle("bg-white", hasText);
+        fetch_button.classList.toggle("text-black", hasText);
+        fetch_button.classList.toggle("hover:bg-neutral-200", hasText);
+
+        fetch_button.classList.toggle("bg-neutral-700", !hasText);
+        fetch_button.classList.toggle("text-neutral-400", !hasText);
+        fetch_button.classList.toggle("cursor-not-allowed", !hasText);
+    }
+
+    function toggleFetchButtonSpinner(isLoading) {
+        fetchbtnicon.innerHTML = isLoading
+            ? `<svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" /><path class="opacity-75" d="M4 12a8 8 0 018-8" /></svg>`
+            : `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.3-4.3"></path></svg>`;
+    }
+
+    toggleButtonState();
+    input.addEventListener("input", toggleButtonState);
+
+    async function fetchVideo() {
+
+        toggleFetchButtonSpinner(true);
+        var url = document.getElementById("url").value
+        const res = await fetch('/formats', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url })
+        });
+
+
+        if (!res.ok) {
+            const err = await res.json();
+            alert("Error fetching formats: " + (err.error || "Unknown error"));
+            return;
+        }
+
+        const data = await res.json();
+        console.log(data);
+        toggleFetchButtonSpinner();
+        pre.classList.add('hidden')
+        post.classList.remove('hidden')
+
+        vidTitle.textContent = data.title;
+        vidDuration.textContent = data.duration;
+        vidLength.textContent = data.durationl
+        vidViews.textContent = data.view_count;
+        vidThumbnail.src = data.thumbnail;
+
+        formats = data.formats;
+        formats.forEach((format, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+
+            const note = format.note || 'Unknown';
+            const ext = format.ext || '—';
+            const resolution = format.resolution || '—';
+            const formatId = format.format_id || '—';
+            const size = format.filesize ? `${(format.filesize / (1024 * 1024)).toFixed(1)} MB` : '—';
+
+            option.text = `${note} • ${ext} • ${resolution} • ${formatId} • ${size}`;
+            dropdown.appendChild(option);
+        });
+
+          dropdown.addEventListener('change', (event) => {
+            const selectedFormat = formats[event.target.value];
+            selected_ext.textContent = selectedFormat.ext;
+            selected_res.textContent = selectedFormat.resolution;
+        });
+
+    }
+
+    async function downloadVideo() {
+        const downloadBtn = document.querySelector('#post button[onclick="downloadVideo()"]');
+        const originalIcon = downloadbtnicon.innerHTML;
+        const originalText = downloadBtn.innerText.trim();
+
+        downloadBtn.disabled = true;
+        toggleDownloadButtonSpinner(true);
+        downloadBtn.style.backgroundColor = '';
+
+        const url = document.getElementById("url").value;
+        const selectedIndex = dropdown.selectedIndex;
+
+        if (selectedIndex === -1) {
+            alert("Please select a format.");
+            downloadBtn.disabled = false;
+            toggleDownloadButtonSpinner(false);
+            return;
+        }
+
+        const selectedFormat = formats[selectedIndex];
+        const format_id = selectedFormat.format_id;
+
+        const response = await fetch('/download', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                url,
+                quality: format_id,
+                format: document.getElementById("downloadFormat").value
+            })
+        });
+
+        if (!response.ok) {
+            const err = await response.text();
+            alert("Download failed: " + err);
+            downloadBtn.disabled = false;
+            toggleDownloadButtonSpinner(false);
+            downloadBtn.innerHTML = originalIcon + ' ' + originalText;
+            downloadBtn.style.backgroundColor = '';
+            return;
+        }
+
+
+        const blob = await response.blob();
+        const ext = selectedFormat.ext || 'mp4';
+        const filename = (vidTitle.textContent || 'video') + '.' + ext;
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(link.href);
+
+        downloadBtn.disabled = false;
+        toggleDownloadButtonSpinner(false);
+        downloadBtn.style.backgroundColor = '';
+        downloadBtn.innerHTML = originalIcon + ' ' + originalText;
+    }
+
+</script>
