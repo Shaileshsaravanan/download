@@ -2,9 +2,22 @@ from flask import Flask, request, render_template, Response, jsonify
 from yt_dlp import YoutubeDL
 import uuid
 import io
+import os
+import base64
+from dotenv import load_dotenv
 from datetime import timedelta
 
 app = Flask(__name__)
+load_dotenv()
+
+cookies_encoded = os.getenv("YOUTUBE_COOKIES")
+if cookies_encoded:
+    cookie_bytes = base64.b64decode(cookies_encoded)
+    temp_cookie_path = "/tmp/youtube_cookies.txt"
+    with open(temp_cookie_path, "wb") as f:
+        f.write(cookie_bytes)
+else:
+    temp_cookie_path = None
 
 def format_views(count):
     if not count:
@@ -28,7 +41,7 @@ def get_formats():
         return jsonify({'error': 'No URL provided'}), 400
 
     try:
-        ydl_opts = {'quiet': True, 'skip_download': True}
+        ydl_opts = {'quiet': True, 'skip_download': True, "cookiefile": temp_cookie_path}
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             formats = info.get('formats', [])
@@ -97,7 +110,8 @@ def download():
             'logtostderr': False,
             'progress_hooks': [],
             'postprocessors': [],
-            'buffer': buffer
+            'buffer': buffer,
+            "cookiefile": temp_cookie_path
         }
 
         if format_type == 'audio':
@@ -105,6 +119,7 @@ def download():
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
                 'preferredquality': '192',
+                "cookiefile": temp_cookie_path
             }]
 
         class StreamWrapper(io.RawIOBase):
